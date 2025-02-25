@@ -1,0 +1,84 @@
+using System; 
+ 
+
+ class Producto
+ 
+ {
+    
+public string NombreDelProducto {get; set;}
+public double Precio {get; set;}
+ public Producto(string nombre, double precio )
+ {
+ NombreDelProducto = nombre;
+ Precio = precio;
+ 
+
+ }
+ public void MostrarProductos()
+ {
+    Console.WriteLine($"Nombre del producto {NombreDelProducto}, costo de el mismo {Precio} ");
+ }
+ }
+ class Tienda
+ {
+    private Producto producto1;
+    private Producto producto2;
+    private Producto producto3;
+    private int contador = 0;
+    
+    
+    public void AgregarProductos(string nombre, double precio)
+    {
+   contador++;
+   if(contador== 1)
+   producto1 = new Producto(nombre, precio);
+   if (contador ==2)
+   producto2 = new Producto (nombre, precio);
+   if(contador == 3)
+
+   producto3 = new Producto (nombre, precio);
+   else 
+   Console.WriteLine("ya no se puede agregar mas productos");
+
+
+    }
+public void Mostrar()
+{
+    producto1?.MostrarProductos();
+    producto2?.MostrarProductos();
+    producto3?.MostrarProductos();
+}
+public double CalculoRecursivoTotal()
+{
+    return CalculoRecursivo(1);
+}
+
+ private double CalculoRecursivo(int indice)
+ {
+    if (indice>3)
+    return 0;
+    if(indice == 1 && producto1 != null)
+    return producto1.Precio + CalculoRecursivo(indice +1);
+     if (indice == 2 && producto2 != null)
+    return producto2.Precio + CalculoRecursivo(indice +1);
+    if (indice == 3 && producto3 != null)
+    return producto3.Precio + CalculoRecursivo(indice +1);
+    return  CalculoRecursivo(indice +1);
+   
+ }
+
+ }
+ class Program
+{
+static void Main()
+{
+    Tienda tienda = new Tienda();
+    tienda.AgregarProductos("chetos",15 );
+    tienda.AgregarProductos("galletas oreo",22 );
+    tienda.AgregarProductos("Coca cola", 45 );
+    
+   Console.WriteLine("cuentas agregadas");
+    tienda.Mostrar();
+ Console.WriteLine($"saldo total: {tienda.CalculoRecursivoTotal():c}");
+}
+}

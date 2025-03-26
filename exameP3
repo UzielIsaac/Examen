@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+
+// Definimos la clase Producto con sus propiedades
+class Producto
+{
+    public string Codigo { get; set; } // Código único del producto
+    public string Nombre { get; set; } // Nombre del producto
+    public decimal PrecioUnitario { get; set; } // Precio por unidad del producto
+    public int CantidadStock { get; set; } // Cantidad disponible en stock
+}
+
+class Program
+{
+    private static readonly string ArchivoJson = "productos.json"; // Nombre del archivo donde se guardarán los productos
+
+    static void Main(string[] args) 
+    {
+        List<Producto> productos = CargarDatos(); // Cargamos los productos desde el archivo JSON
+        Console.WriteLine("Ingrese los productos para el stock.");
+        while (true)  // el true es para poner como accion valida 
+        {
+            Console.Write("¿Desea agregar un nuevo producto? (Sí/No): ");
+            string respuesta = Console.ReadLine().Trim().ToLower();
+            if (respuesta != "si") break;// termina 
+            AgregarProducto(productos);
+        }
+
+        while (true)
+        {
+            // Inicia la compra
+            Console.WriteLine("\nBuenas tardes, ¿gusta llevar algo?");
+            List<Producto> productosSeleccionados = new List<Producto>(); // Lista para almacenar los productos seleccionados
+            decimal total = 0;
+
+            while (true)
+            {
+                Console.Write("Ingrese el nombre del producto (o 'fin' para terminar): ");
+                string nombre = Console.ReadLine().Trim();
+                if (nombre.ToLower() == "fin") break;
+                
+                Producto producto = BuscarPorNombre(productos, nombre); // Buscamos el producto por nombre
+                if (producto != null)
+                {
+                    productosSeleccionados.Add(producto);
+                    total += producto.PrecioUnitario; // Sumamos el precio del producto al total
+                }
+                else
+                {
+                    Console.WriteLine($"Producto '{nombre}' no encontrado."); // Mensaje si no se encuentra el producto
+                }
+            }
+            
+            Console.WriteLine($"Serían: {total:C}"); // Mostramos el total a pagar
+            
+            while (true)
+            {
+                Console.Write("¿Desea eliminar algún producto de la compra? (Sí/No): ");
+                string eliminar = Console.ReadLine().Trim().ToLower();
+                if (eliminar == "no") break; 
+
+                Console.Write("Ingrese el nombre del producto a eliminar: ");
+                string eliminarNombre = Console.ReadLine().Trim();
+                Producto productoAEliminar = productosSeleccionados.FirstOrDefault(p => p.Nombre.Equals(eliminarNombre, StringComparison.OrdinalIgnoreCase)); // para eliminar los productos
+                if (productoAEliminar != null)
+                {
+                    productosSeleccionados.Remove(productoAEliminar);
+                    total -= productoAEliminar.PrecioUnitario;
+                    Console.WriteLine($"Producto '{eliminarNombre}' eliminado. Nuevo total: {total:C}"); 
+                }
+                else
+                {
+                    Console.WriteLine($"El producto '{eliminarNombre}' no está en su compra."); // si el producto no esta guardado en 
+                }
+            }
+            
+            while (true)
+            {
+                Console.Write("Ingrese con cuánto va a pagar: ");
+                if (decimal.TryParse(Console.ReadLine(), out decimal pago)) // Validamos que la entrada sea un número decimal
+                {
+                    if (pago >= total)
+                    {
+                        decimal cambio = pago - total;
+                        Console.WriteLine($"Gracias por su compra. Su cambio es: {cambio:C}"); // Mostramos el cambio
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Su dinero es insuficiente, por favor ingrese la cantidad completa."); // Mensaje si el dinero no es suficiente
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Monto no válido, intente nuevamente."); // Mensaje si la entrada no es un número válido
+                }
+            }
+        }
+    
+    }
+
+    static List<Producto> CargarDatos() //aqui tenemos la lista
+    {
+        if (File.Exists(ArchivoJson)) // Verificamos si el archivo JSON existe
+        {
+            string json = File.ReadAllText(ArchivoJson); // Leemos el contenido del archivo
+            return JsonSerializer.Deserialize<List<Producto>>(json) ?? new List<Producto>(); // Deserializamos los datos o retornamos una lista vacía
+        }
+        return new List<Producto>(); // Si el archivo no existe, retornamos una lista vacía
+    }
+
+    static void GuardarDatos(List<Producto> productos) //al macena los datos 
+    {
+        string json = JsonSerializer.Serialize(productos, new JsonSerializerOptions { WriteIndented = true }); // Serializamos la lista de productos con formato legible
+        File.WriteAllText(ArchivoJson, json); // Guardamos el contenido en el archivo JSON
+    }
+
+    static void AgregarProducto(List<Producto> productos)
+    {
+        Console.Write("Ingrese el código del producto: ");
+        string codigo = Console.ReadLine().Trim();
+        
+        if (productos.Any(p => p.Codigo == codigo)) // Validamos que no se repita el código
+        {
+            Console.WriteLine("Ya existe un producto con ese código."); 
+            return;
+        }
+        
+        Console.Write("Ingrese el nombre del producto: ");
+        string nombre = Console.ReadLine().Trim();
+        
+        Console.Write("Ingrese el precio unitario del producto: ");
+        if (!decimal.TryParse(Console.ReadLine(), out decimal precioUnitario)) // Validamos que el precio sea un número decimal
+        {
+            Console.WriteLine("Precio inválido.");
+            return;
+        }
+        
+        Console.Write("Ingrese la cantidad en stock del producto: ");
+        if (!int.TryParse(Console.ReadLine(), out int cantidadStock)) // Validamos que la cantidad sea un número entero
+        {
+            Console.WriteLine("Cantidad en stock inválida.");
+            return;
+        }
+        
+        Producto nuevoProducto = new Producto // como su mismo nombre lo dice new producto 
+        {
+            Codigo = codigo,
+            Nombre = nombre,
+            PrecioUnitario = precioUnitario, //aqui es donde decidimos agregar los productos, para poder interactuar conn ellos
+            CantidadStock = cantidadStock
+        };
+        
+        productos.Add(nuevoProducto); // Agregamos el nuevo producto a la lista
+        GuardarDatos(productos); // Guardamos los datos en el archivo JSON
+        Console.WriteLine("Producto agregado con éxito."); // mensaje donde arroja donde se agrego el produto 
+    }
+
+    static Producto BuscarPorNombre(List<Producto> productos, string nombre)
+    {
+        return productos.FirstOrDefault(p => p.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase)); // Buscamos el producto ignorando mayúsculas y minúsculas
+    }
+}
+//en este programa hay que tener cuidado con los datos guardados, porque puede ocurrir un problema con la memoria, aqui dejo como notaa como solucionarlo : 
+// Solución: en la terminal agregamos lo siguiente "dotnet clean" , despues nos dice que error tiene de ahi usamos el dotnet build, si aun asi no funciona vamos al control de tareas
+// control de tareas: donde esta la de tareas clic derecho y posteriormente elminamos, de ahi deberia copilar, dado caso que no seria reiniciar la lap.

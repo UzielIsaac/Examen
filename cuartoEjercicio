@@ -1,0 +1,34 @@
+sing System; 
+  
+
+  class Program 
+  {
+
+
+    static void Main()
+    {
+        int[] numeros = new int [5];
+        Console.WriteLine("ingresa 5 numeros para realizar el metodo");
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine($"ingresa el numero {i+1}");
+            numeros[i] = int.Parse(Console.ReadLine());
+
+        }
+        
+        Console.WriteLine(" \nArreglo original");
+        foreach (int numero in numeros)
+        {
+         Console.Write(numero + " ");
+        }
+    Array.Reverse(numeros);
+    Console.WriteLine("\narreglo invertido");
+    foreach (int numero in numeros)
+    {
+        Console.Write(numero + " ");
+    }
+    
+    
+    }
+}
+  

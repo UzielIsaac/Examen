@@ -1,0 +1,32 @@
+using System;
+using System.Linq; // Se usa para manipular arreglos fácilmente
+
+class Program
+{
+    static void Main()
+    {
+        int[] numeros = new int[10]; // Se declara un arreglo de 10 elementos
+
+        // Pedir al usuario que ingrese 10 números
+        Console.WriteLine("Ingresa 10 números:");
+        for (int i = 0; i < 10; i++)
+        {
+            Console.Write($"Número {i + 1}: ");
+            numeros[i] = int.Parse(Console.ReadLine()); // Guardar cada número en el arreglo
+        }
+
+        // Pedir el número a eliminar
+        Console.Write("Ingresa el número que deseas eliminar: ");
+        int numeroEliminar = int.Parse(Console.ReadLine());
+
+        // Eliminar el número del arreglo usando Where y convertirlo de nuevo en un arreglo
+        int[] nuevoArreglo = numeros.Where(n => n != numeroEliminar).ToArray();
+
+        // Mostrar el nuevo arreglo sin el número eliminado
+        Console.WriteLine("Arreglo después de eliminar el número:");
+        foreach (int num in nuevoArreglo)
+        {
+            Console.Write(num + " ");
+        }
+    }
+}

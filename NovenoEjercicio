@@ -1,0 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+class Program
+{
+    // Ruta del archivo CSV
+    private const string RutaArchivo = "ventas.csv";
+
+    // Método para registrar una venta en el archivo CSV
+    static void RegistrarVenta(string nombreProducto, int cantidad, double precioUnitario)
+    {
+        using (StreamWriter writer = new StreamWriter(RutaArchivo, true))
+        {
+            writer.WriteLine($"{nombreProducto},{cantidad},{precioUnitario}");
+        }
+    }
+
+    // Método para calcular el total de ventas del día
+    static double CalcularTotalVentas()
+    {
+        double totalVentas = 0;
+
+        if (File.Exists(RutaArchivo))
+        {
+            using (StreamReader reader = new StreamReader(RutaArchivo))
+            {
+                string linea;
+                while ((linea = reader.ReadLine()) != null)
+                {
+                    string[] datos = linea.Split(',');
+                    if (datos.Length == 3)
+                    {
+                        int cantidad = int.Parse(datos[1]);
+                        double precioUnitario = double.Parse(datos[2]);
+                        totalVentas += cantidad * precioUnitario;
+                    }
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("No se encontró el archivo de ventas.");
+        }
+
+        return totalVentas;
+    }
+
+    static void Main(string[] args)
+    {
+        // Registrar algunas ventas
+        RegistrarVenta("Producto A", 2, 10.50);
+        RegistrarVenta("Producto B", 1, 25.00);
+        RegistrarVenta("Producto C", 3, 5.75);
+
+        // Calcular el total de ventas del día
+        double total = CalcularTotalVentas();
+        Console.WriteLine($"Total de ventas del día: ${total:F2}");
+    }
+}

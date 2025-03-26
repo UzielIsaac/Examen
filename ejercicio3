@@ -1,0 +1,79 @@
+using System;
+
+// Clase que maneja la lógica del ordenamiento
+class CalculadoraArreglo
+{
+    private int[] numeros; // Arreglo privado para almacenar los números ingresados por el usuario
+    
+    // Constructor de la clase
+    public CalculadoraArreglo()
+    {
+        numeros = new int[10]; // Inicializamos el arreglo con un tamaño de 10 posiciones
+    }
+
+    // Método para solicitar los números al usuario y almacenarlos en el arreglo
+    public void IngresarNumeros()
+    {
+        Console.WriteLine("Ingresa 10 números enteros:"); // Mensaje para el usuario
+        for (int i = 0; i < 10; i++) // Bucle que itera 10 veces para solicitar cada número
+        {
+            bool valido = false; // Bandera para validar la entrada
+            while (!valido) // Se mantiene en bucle hasta que el usuario ingrese un número válido
+            {
+                Console.Write($"Número {i + 1}: "); // Solicita el número indicando su posición
+                string entrada = Console.ReadLine(); // Lee la entrada del usuario
+                if (int.TryParse(entrada, out numeros[i])) // Intenta convertir la entrada en entero
+                {
+                    valido = true; // Si la conversión es exitosa, sale del bucle
+                }
+                else
+                {
+                    Console.WriteLine("Entrada no válida. Por favor, ingrese un número entero."); // Mensaje de error
+                }
+            }
+        }
+    }
+
+    // Método para ordenar los números con el algoritmo de ordenamiento burbuja
+    public void OrdenarNumeros()
+    {
+        int n = numeros.Length; // Se obtiene la cantidad de elementos en el arreglo
+        for (int i = 0; i < n - 1; i++) // Bucle externo controla el número de pasadas
+        {
+            for (int j = 0; j < n - i - 1; j++) // Bucle interno compara los elementos adyacentes
+            {
+                if (numeros[j] > numeros[j + 1]) // Si el elemento actual es mayor al siguiente, se intercambian
+                {
+                    int temp = numeros[j]; // Se almacena temporalmente el valor actual
+                    numeros[j] = numeros[j + 1]; // Se asigna el valor del siguiente elemento al actual
+                    numeros[j + 1] = temp; // Se asigna el valor temporal al siguiente elemento
+                }
+            }
+        }
+    }
+
+    // Método para mostrar los resultados al usuario
+    public void MostrarResultados()
+    {
+        // Mostrar los números ordenados de menor a mayor
+        Console.WriteLine("\nNúmeros ordenados de menor a mayor:");
+        foreach (int num in numeros) // Itera sobre el arreglo y muestra cada número
+        {
+            Console.Write(num + " "); // Imprime el número con un espacio entre ellos
+        }
+        Console.WriteLine(); // Salto de línea para mejor presentación
+    }
+}
+
+// Clase principal que ejecuta el programa
+class Program
+{
+    static void Main()
+    {
+        CalculadoraArreglo calculadora = new CalculadoraArreglo(); // Se crea una instancia de la clase CalculadoraArreglo
+        
+        calculadora.IngresarNumeros(); // Se ingresan los números
+        calculadora.OrdenarNumeros(); // Se ordenan los números utilizando el método burbuja
+        calculadora.MostrarResultados(); // Se muestran los números ordenados
+    }
+}

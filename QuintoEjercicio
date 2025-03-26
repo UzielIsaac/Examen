@@ -1,0 +1,34 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "nombres.txt"; // Definir la ruta del archivo donde se almacenarán los nombres
+        
+        // Solicitar 5 nombres y guardarlos en el archivo
+        Console.WriteLine("Ingresa 5 nombres:");
+        using (StreamWriter writer = new StreamWriter(filePath)) // Crear un StreamWriter para escribir en el archivo
+        {
+            for (int i = 0; i < 5; i++) // Iterar 5 veces para solicitar nombres
+            {
+                Console.Write($"Nombre {i + 1}: "); // Pedir al usuario un nombre
+                string nombre = Console.ReadLine(); // Leer el nombre ingresado por el usuario
+                writer.WriteLine(nombre); // Escribir el nombre en el archivo
+            }
+        }
+        
+        // Leer y mostrar los nombres almacenados
+        Console.WriteLine("\nLos nombres almacenados son:");
+        using (StreamReader reader = new StreamReader(filePath)) // Crear un StreamReader para leer el archivo
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null) // Leer cada línea del archivo hasta el final
+            {
+                Console.WriteLine(line); // Imprimir cada nombre en la consola
+            }
+        }
+    }
+}
+

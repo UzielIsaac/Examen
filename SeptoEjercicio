@@ -1,0 +1,30 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "texto.txt"; // Definir la ruta del archivo donde se almacenará el texto, saldra en un costado de los programas 
+        
+        // Solicitar al usuario que escriba un texto y guardarlo en el archivo
+        Console.WriteLine("Escriba un texto:"); // Pedir al usuario que ingrese un texto
+        string texto = Console.ReadLine(); // Leer el texto ingresado por el usuario
+        
+        using (StreamWriter writer = new StreamWriter(filePath)) // Crear un StreamWriter para escribir en el archivo
+        {
+            writer.WriteLine(texto); // Escribir el texto en el archivo
+        }
+        
+        // Leer el archivo y contar cuántas palabras contiene
+        Console.WriteLine("\nConteo de palabras en el texto:");
+        using (StreamReader reader = new StreamReader(filePath)) // Crear un StreamReader para leer el archivo
+        {
+            string contenido = reader.ReadToEnd(); // Leer todo el contenido del archivo
+            string[] palabras = contenido.Split(new char[] { ' ', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries); // Dividir el texto en palabras
+            int cantidadPalabras = palabras.Length; // Contar la cantidad de palabras
+            
+            Console.WriteLine($"El texto contiene {cantidadPalabras} palabras."); // Mostrar el conteo de palabras
+        }
+    }
+}

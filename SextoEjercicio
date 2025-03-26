@@ -1,0 +1,52 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string filePath = "notas.txt"; // Definir la ruta del archivo donde se almacenarán los datos de los estudiantes
+        
+        // Solicitar datos de los estudiantes
+        using (StreamWriter writer = new StreamWriter(filePath)) // Crear un StreamWriter para escribir en el archivo
+        {
+            Console.Write("Ingrese la cantidad de estudiantes: "); // Pedir al usuario la cantidad de estudiantes
+            int cantidadEstudiantes = int.Parse(Console.ReadLine()); // Leer y convertir la entrada a un número entero
+            
+            for (int i = 0; i < cantidadEstudiantes; i++) // Iterar según la cantidad de estudiantes
+            {
+                Console.Write($"Nombre del estudiante {i + 1}: "); // Pedir el nombre del estudiante
+                string nombre = Console.ReadLine(); // Leer el nombre ingresado
+                
+                Console.Write("Ingrese la primera calificación: "); // Pedir la primera calificación
+                double nota1 = double.Parse(Console.ReadLine()); // Leer y convertir la calificación
+                
+                Console.Write("Ingrese la segunda calificación: "); // Pedir la segunda calificación
+                double nota2 = double.Parse(Console.ReadLine()); // Leer y convertir la calificación
+                
+                Console.Write("Ingrese la tercera calificación: "); // Pedir la tercera calificación
+                double nota3 = double.Parse(Console.ReadLine()); // Leer y convertir la calificación
+                
+                writer.WriteLine($"{nombre},{nota1},{nota2},{nota3}"); // Escribir los datos en el archivo separados por comas
+            }
+        }
+        
+        // Leer el archivo y calcular promedios
+        Console.WriteLine("\nPromedios de los estudiantes:");
+        using (StreamReader reader = new StreamReader(filePath)) // Crear un StreamReader para leer el archivo, 
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null) // Leer cada línea del archivo hasta el final
+            {
+                string[] datos = line.Split(','); // Separar los datos por comas
+                string nombre = datos[0]; // Obtener el nombre del estudiante
+                double nota1 = double.Parse(datos[1]); // Obtener la primera calificación
+                double nota2 = double.Parse(datos[2]); // Obtener la segunda calificación
+                double nota3 = double.Parse(datos[3]); // Obtener la tercera calificación
+                
+                double promedio = (nota1 + nota2 + nota3) / 3; // Calcular el promedio
+                Console.WriteLine($"{nombre}: Promedio = {promedio:F2}"); // Mostrar el promedio con dos decimales
+            }
+        }
+    }
+}
